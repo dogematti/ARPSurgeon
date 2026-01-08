@@ -1,0 +1,27 @@
+services:
+  arpsurgeon:
+    build: .
+    image: arpsurgeon:latest
+    container_name: arpsurgeon
+    # Host networking is REQUIRED for ARP/L2 manipulation to work
+    # Bridge mode will isolate the container from the LAN's L2 broadcast domain
+    network_mode: host
+    
+    # Run as root to allow raw socket access (Scapy requirement)
+    privileged: true
+    
+    volumes:
+      # Persist the database
+      - ./arpsurgeon.db:/app/arpsurgeon.db
+      # Persist configuration
+      - ./arpsurgeon.toml:/app/arpsurgeon.toml
+      # Save captures and reports
+      - ./artifacts:/app/artifacts
+    
+    environment:
+      - LOG_LEVEL=INFO
+    
+    restart: unless-stopped
+    
+    # Default command is web interface.
+    # To run a campaign instead: command: campaign --file my_campaign.yaml

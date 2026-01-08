@@ -1,0 +1,5 @@
+scapy>=2.5.0
+PyYAML
+pydantic
+fastapi
+uvicorn[standard]

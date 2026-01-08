@@ -1,0 +1,83 @@
+# ARPSurgeon Reference Configuration
+# Rename to 'arpsurgeon.toml' in your working directory or ~/.arpsurgeon.toml
+
+[global]
+# Network Interface
+# Leave commented to auto-detect the default gateway interface.
+# iface = "eth0"
+
+# -----------------------------------------------------------------------------
+# Passive Reconnaissance (Profile & Discover)
+# -----------------------------------------------------------------------------
+[discover]
+# Timeout in seconds to wait for ARP replies per batch
+timeout = 2.0
+# Number of retries for unresponsive hosts
+retry = 2
+# Path to OUI CSV file for vendor lookup (optional)
+# oui_file = "/usr/share/arpsurgeon/oui.csv"
+
+[profile]
+# Default duration for profiling runs in seconds
+duration = 600
+# Capture filter (BPF). Default is 'arp' to be lightweight.
+# Use 'arp or (udp and (port 67 or port 5353))' for OS/Service fingerprinting.
+pcap_filter = "arp or (udp and (port 67 or port 5353))"
+
+# -----------------------------------------------------------------------------
+# Monitoring & Defense
+# -----------------------------------------------------------------------------
+[monitor]
+# Threshold: Packets per window to trigger an "ARP Storm" alert
+storm_threshold = 200
+# Window size in seconds for rate calculation
+storm_window = 10
+# Rotation size for pcap capture files (MB) to prevent disk fill
+pcap_rotate_mb = 500
+# Rotation time for pcap files (seconds)
+pcap_rotate_seconds = 3600
+
+[notifications]
+# Master switch for real-time alerts
+enabled = false
+# Webhook URLs (uncomment and populate to use)
+# discord_webhook = "https://discord.com/api/webhooks/..."
+# slack_webhook = "https://hooks.slack.com/services/..."
+# webhook_url = "http://internal-siem/alerts"
+
+# -----------------------------------------------------------------------------
+# Active Operations (Poison, MITM, Sever)
+# -----------------------------------------------------------------------------
+[poison]
+# Interval between spoofed packets (seconds).
+# Lower = stronger hold, Higher = stealthier.
+interval = 2.5
+# Jitter: Random +/- seconds added to interval to evade pattern detection.
+jitter = 0.5
+# Stagger: Delay between targeting different victims in a batch (seconds).
+stagger = 0.1
+# Automatically restore legitimate ARP entries upon exit.
+# CRITICAL: Keep this true to avoid breaking the network when you stop.
+restore = true
+# Verify restoration by checking if targets corrected their cache (optional)
+verify = true
+
+[relay]
+# Packet forwarding rate limit (packets/sec) to prevent flooding.
+rate = 1000
+
+[dns-spoof]
+# Default IP to return for spoofed domains
+# default_ip = "192.168.1.5"
+# Time-To-Live for spoofed DNS records (low is better for testing)
+ttl = 60
+
+[sever]
+# Default duration for TCP connection severing attacks
+duration = 60
+
+[fuzz]
+# Default rate for packet injection (pps)
+rate = 10
+# Default fuzzing mode
+mode = "random"

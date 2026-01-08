@@ -1,0 +1,25 @@
+name: "Network Hygiene & Defense"
+description: "Scans for live hosts and monitors for integrity violations."
+steps:
+  - action: discover
+    name: "Baseline Scan"
+    args:
+      cidr: "192.168.1.0/24"
+      json: "baseline.json"
+      timeout: 1.0
+
+  - action: check
+    name: "Connectivity Check"
+    args:
+      victims_json: "baseline.json"
+      ping: true
+
+  - action: monitor
+    name: "Integrity Monitor (30m)"
+    description: "Watch for ARP Storms, Conflicts, and Gratuitous ARPs."
+    args:
+      duration: 1800
+      storm_threshold: 150
+      storm_window: 5
+      verbose: true
+      jsonl: "integrity_log.jsonl"

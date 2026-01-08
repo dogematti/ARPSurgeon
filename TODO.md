@@ -1,0 +1,21 @@
+# TODO
+
+- [x] MITM workflow mode (single command: poison + relay + dns-spoof).
+- [x] Automatic victim selection from `discover` or `profile` JSON output.
+- [x] Live TUI dashboard (events + counters + alerts).
+- [x] Traffic capture presets with rotating pcaps (size/time limits).
+- [x] Report timeline CSV (for charts) and HTML summary export.
+- [x] Dry-run mode for active commands.
+- [x] Passive OS Fingerprinting (TTL/Window Size).
+- [x] Configuration file support (`arpsurgeon.toml`).
+- [x] Network Topology Visualization (interactive HTML graph or Graphviz).
+- [x] DHCP Fingerprinting (Option 55 analysis) for precise OS detection.
+- [x] Passive Service Discovery (mDNS/NBNS/LLMNR) for hostname resolution.
+- [x] TCP Connection Severing (RST Injection) for surgical session termination.
+- [x] L2 Protocol Fuzzer (Malformed ARP/Ethernet frames) for stress testing.
+- [x] Scenario Engine ("Campaigns") for automated, multi-step test execution.
+- [x] SQLite Database Integration (Centralized storage for events/hosts).
+- [x] Notification System (Webhooks/Discord/Slack) for real-time alerts.
+- [x] Job Manager & Pydantic Models (Async execution engine).
+- [x] Web Control Plane (REST API + Dashboard) for remote management.
+- [x] Containerization (Docker) for consistent deployment and environment isolation.
