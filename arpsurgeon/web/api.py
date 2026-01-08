@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import glob
 import os
+from pathlib import Path
 from typing import Any, Dict
 
+import yaml
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -17,6 +20,8 @@ app = FastAPI(title="ARPSurgeon Control Plane")
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 if not os.path.exists(STATIC_DIR):
     os.makedirs(STATIC_DIR)
+
+CAMPAIGNS_DIR = Path(__file__).parent.parent.parent / "templates" / "campaigns"
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
@@ -57,7 +62,21 @@ def get_events(limit: int = 50):
 
 @app.get("/api/v1/profiles")
 def get_profiles():
+    campaign_profiles = []
+    if CAMPAIGNS_DIR.exists():
+        for campaign_file in CAMPAIGNS_DIR.glob("*.yaml"):
+            try:
+                data = yaml.safe_load(campaign_file.read_text())
+                name = data.get("name", campaign_file.stem)
+                campaign_profiles.append({
+                    "name": name,
+                    "args": {"campaign_file": str(campaign_file)}
+                })
+            except Exception as e:
+                print(f"Error loading campaign {campaign_file}: {e}")
+
     return {
+        "campaign": campaign_profiles,
         "monitor": [
             {
                 "name": "Standard Sentry (Default)", 

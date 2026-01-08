@@ -6,6 +6,7 @@ import time
 import uuid
 from typing import Any, Callable, Dict, Optional
 
+from arpsurgeon.campaign import run_campaign
 from arpsurgeon.models import JobStatus
 from arpsurgeon.observe import monitor, observe, profile
 
@@ -40,9 +41,17 @@ def _adapter_profile(args: Dict[str, Any], stop_event: threading.Event) -> None:
         stop_event=stop_event
     )
 
+def _adapter_campaign(args: Dict[str, Any], stop_event: threading.Event) -> None:
+    run_campaign(
+        campaign_file=args.get("campaign_file"),
+        dry_run=args.get("dry_run", False),
+        stop_event=stop_event
+    )
+
 JOB_ADAPTERS = {
     "monitor": _adapter_monitor,
     "profile": _adapter_profile,
+    "campaign": _adapter_campaign,
     # Add others as needed
 }
 

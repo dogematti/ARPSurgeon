@@ -11,15 +11,15 @@ import yaml
 # We defer imports of cli commands to avoid circular dependency
 # as cli.py imports this module.
 
-def run_campaign(campaign_file: str, dry_run: bool = False) -> None:
+def run_campaign(campaign_file: str, dry_run: bool = False, stop_event: Any = None) -> None:
     path = Path(campaign_file)
     if not path.exists():
-        raise SystemExit(f"Campaign file not found: {path}")
+        raise RuntimeError(f"Campaign file not found: {path}")
 
     try:
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
     except yaml.YAMLError as e:
-        raise SystemExit(f"Invalid YAML: {e}")
+        raise RuntimeError(f"Invalid YAML: {e}")
 
     name = data.get("name", "Unnamed Campaign")
     steps = data.get("steps", [])
@@ -118,6 +118,10 @@ def run_campaign(campaign_file: str, dry_run: bool = False) -> None:
     }
 
     for i, step in enumerate(steps, 1):
+        if stop_event and stop_event.is_set():
+            print("[*] Campaign stopped by user.")
+            break
+
         action = step.get("action")
         step_name = step.get("name", action)
         args_dict = step.get("args", {})
@@ -126,7 +130,12 @@ def run_campaign(campaign_file: str, dry_run: bool = False) -> None:
         if action == "sleep":
             duration = float(args_dict.get("duration", 0))
             print(f"[*] Step {i}: Sleep {duration}s")
-            time.sleep(duration)
+            # Sleep in chunks to allow interruption
+            end_time = time.time() + duration
+            while time.time() < end_time:
+                if stop_event and stop_event.is_set():
+                    break
+                time.sleep(0.1)
             continue
 
         if action not in COMMAND_MAP:
@@ -152,10 +161,10 @@ def run_campaign(campaign_file: str, dry_run: bool = False) -> None:
         except SystemExit as e:
             if e.code != 0:
                 print(f"[!] Step {i} failed with exit code {e.code}. Aborting campaign.")
-                sys.exit(e.code)
+                raise RuntimeError(f"Step {i} failed")
         except Exception as e:
              print(f"[!] Step {i} encountered error: {e}. Aborting campaign.")
-             sys.exit(1)
+             raise RuntimeError(f"Step {i} error: {e}")
         
         print(f"[*] Step {i} completed.\n")
 
