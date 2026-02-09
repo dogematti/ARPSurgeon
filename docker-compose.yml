@@ -20,8 +20,14 @@ services:
     
     environment:
       - LOG_LEVEL=INFO
-    
+
     restart: unless-stopped
-    
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/stats"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
     # Default command is web interface.
     # To run a campaign instead: command: campaign --file my_campaign.yaml

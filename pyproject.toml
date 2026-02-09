@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arpsurgeon"
+version = "1.1.0"
+description = "Precision-oriented ARP observation and manipulation toolkit."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [{name = "ARPSurgeon Contributors"}]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Topic :: System :: Networking",
+    "Topic :: Security",
+]
+dependencies = [
+    "scapy>=2.5.0",
+    "PyYAML",
+    "pydantic",
+    "fastapi",
+    "uvicorn[standard]",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "httpx>=0.24",
+]
+
+[project.scripts]
+arpsurgeon = "arpsurgeon.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["arpsurgeon*"]
+
+[tool.setuptools.package-data]
+"arpsurgeon.web" = ["static/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --tb=short"

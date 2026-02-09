@@ -8,7 +8,7 @@ with open("requirements.txt", "r", encoding="utf-8") as f:
 
 setup(
     name="arpsurgeon",
-    version="1.0.0",
+    version="1.1.0",
     author="ARPSurgeon Contributors",
     description="Precision-oriented ARP observation and manipulation toolkit.",
     long_description=long_description,
@@ -17,6 +17,9 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
+    extras_require={
+        "dev": ["pytest>=7.0", "httpx>=0.24"],
+    },
     entry_points={
         "console_scripts": [
             "arpsurgeon=arpsurgeon.cli:main",
