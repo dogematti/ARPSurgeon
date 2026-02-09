@@ -39,6 +39,15 @@ async function fetchHosts() {
     });
 }
 
+async function clearHosts() {
+    if (!confirm("Are you sure you want to clear all discovered hosts?")) {
+        return;
+    }
+    await fetch(`${API_BASE}/hosts`, { method: 'DELETE' });
+    document.querySelector('#hosts-table tbody').innerHTML = '';
+    fetchHosts();
+}
+
 let currentJobType = null;
 let jobModal = null;
 

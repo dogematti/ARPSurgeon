@@ -56,6 +56,11 @@ def stop_job(job_id: str):
 def get_hosts():
     return db.get_hosts()
 
+@app.delete("/api/v1/hosts")
+def clear_hosts():
+    db.clear_hosts()
+    return {"status": "cleared"}
+
 @app.get("/api/v1/events")
 def get_events(limit: int = 50):
     return db.get_events(limit=limit)

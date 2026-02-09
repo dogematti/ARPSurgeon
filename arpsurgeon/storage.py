@@ -68,6 +68,13 @@ class Database:
         conn.close()
         return [dict(row) for row in rows]
 
+    def clear_hosts(self) -> None:
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM hosts")
+        conn.commit()
+        conn.close()
+
     def get_events(self, limit: int = 100, offset: int = 0) -> list[dict[str, Any]]:
         conn = self.get_connection()
         cursor = conn.cursor()
